@@ -63,6 +63,19 @@ app.post("/show", async (req, res) => {
     }
 });
 
+app.post("/add-user", async (req, res) => {
+    const { name, email } = req.body;
+    
+    try {
+        const newUser = new User({ name, email });
+        await newUser.save();
+        res.send("User added successfully!");
+    } catch (err) {
+        res.status(500).send("Error adding user.");
+    }
+});
+
+
 
 
 app.listen(4001,()=>{
