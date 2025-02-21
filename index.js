@@ -2,17 +2,35 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const path = require("path");
+const dotenv = require("dotenv");
+dotenv.config();
 
 
 
+// Choose the correct database URL based on the environment
+const MONGO_URI = process.env.NODE_ENV === "production" 
+    ? process.env.MONGODB_URI_PROD 
+    : process.env.MONGODB_URI_DEV;
 
-// Connect to MongoDB
-mongoose.connect("mongodb://127.0.0.1:27017/myDatabase", {
+if (!MONGO_URI) {
+    console.error("MongoDB connection string is missing!");
+    process.exit(1);
+}
+
+mongoose.connect(MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
-})
-.then(() => console.log("MongoDB Connected"))
-.catch(err => console.log("MongoDB Connection Error: ", err));
+}).then(() => console.log(`Connected to MongoDB: ${MONGO_URI}`))
+  .catch(err => console.error("Error:", err));
+
+
+// // Connect to MongoDB
+// mongoose.connect("mongodb+srv://andyugbawa:aweriarue@cluster0.grdet.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+// })
+// .then(() => console.log("MongoDB Connected"))
+// .catch(err => console.log("MongoDB Connection Error: ", err));
 
 // Define Schema
 const UserSchema = new mongoose.Schema({
